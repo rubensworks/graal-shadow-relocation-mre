@@ -49,6 +49,8 @@ Exception in thread "main" java.lang.UnsatisfiedLinkError: 'void demo.vendors.co
         at demo.Main.main(Main.java:21)
 ```
 
+The error output can be seen in the CI output of this project: https://github.com/rubensworks/graal-shadow-relocation-mre/actions
+
 ## Setup of this repo
 
 The setup can be found in `app/build.gradle`.
