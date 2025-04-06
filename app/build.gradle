@@ -55,5 +55,5 @@ task runFinalJar(type: JavaExec) {
     classpath = files('build/libs/app-all.jar')
     classpath += sourceSets.main.runtimeClasspath
     mainClass = 'demo.Main'
+    dependsOn build
 }
-build.dependsOn.add("runFinalJar")

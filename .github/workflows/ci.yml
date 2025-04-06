@@ -43,5 +43,5 @@ jobs:
         with:
           gradle-version: wrapper
           cache-read-only: false
-      - name: 'Build'
+      - name: 'Build and run'
         run: ./gradlew runFinalJar
