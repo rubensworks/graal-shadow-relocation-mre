@@ -1,0 +1,59 @@
+buildscript {
+  ext {
+    asmAsmVersion = "9.6" // https://gitlab.ow2.org/asm/asm/-/tags
+  } 
+   configurations {
+        classpath {
+            resolutionStrategy {
+                //in order to handle jackson's higher release version in shadow, this needs to be upgraded to latest.
+                force(group: "org.ow2.asm", name: "asm", version: asmAsmVersion)
+                force(group: "org.ow2.asm", name: "asm-commons", version: asmAsmVersion)
+            }
+        }
+    }
+}
+
+plugins {
+	id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+apply plugin: 'idea'
+
+//java {
+//    toolchain.languageVersion = JavaLanguageVersion.of(21)
+//	sourceCompatibility = 17
+//	targetCompatibility = 17
+//}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    shadow "org.graalvm.sdk:graal-sdk:24.1.1"
+	implementation "org.graalvm.sdk:graal-sdk:24.1.1"
+    shadow "org.graalvm.js:js:24.1.1"
+	implementation "org.graalvm.js:js:24.1.1"
+}
+
+shadowJar {
+    mergeServiceFiles() // To fix graal issue: https://github.com/oracle/graaljs/issues/125
+    configurations = [project.configurations.shadow]
+	
+    // Relocate to avoid clashes
+    relocate 'org.graalvm', 'demo.vendors.org.graalvm'
+    relocate 'com.ibm', 'demo.vendors.com.ibm'
+    relocate 'com.oracle', 'demo.vendors.com.oracle'
+}
+
+application {
+    mainClass = 'demo.Main'
+}
+
+task runFinalJar(type: JavaExec) {
+    classpath = files('build/libs/app-all.jar')
+    classpath += sourceSets.main.runtimeClasspath
+    mainClass = 'demo.Main'
+}
+build.dependsOn.add("runFinalJar")
